@@ -1,0 +1,44 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.4'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper' //10.1.19
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 애플리케이션에 필요한 경우 추가
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // 테스트에 필요한 의존성 추가
+    //DB 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	runtimeOnly 'com.h2database:h2'
+	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
+}
+    
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
