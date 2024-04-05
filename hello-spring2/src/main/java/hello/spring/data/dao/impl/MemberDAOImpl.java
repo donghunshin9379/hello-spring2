@@ -1,5 +1,4 @@
 package hello.spring.data.dao.impl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -12,7 +11,7 @@ import hello.spring.repository.MemberRepository;
 @Service
 public class MemberDAOImpl implements MemberDAO {
 
-  hello.spring.repository.MemberRepository memberRepository;
+  MemberRepository memberRepository;
 
   @Autowired
   public MemberDAOImpl(MemberRepository memberRepository){
@@ -23,6 +22,19 @@ public class MemberDAOImpl implements MemberDAO {
   public MemberEntity saveMember(MemberEntity memberEntity) {
 	memberRepository.save(memberEntity);
 	return memberEntity;
-}
+  }
+  @Override
+  public MemberEntity getMemberByUserId(String userId) {
+	return memberRepository.findByUserId(userId);
+  }
+
+  @Override
+  public boolean isUserIdExists(String userId) {
+    return memberRepository.existsByUserId(userId);
+  }
+
+
+
+  
 
 }

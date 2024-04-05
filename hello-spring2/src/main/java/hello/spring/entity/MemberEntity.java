@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "member")
+@Table(name = "member") //DB 속성을 담는게 ENtity(field값)
 public class MemberEntity {
 
 	@Id
@@ -29,15 +29,15 @@ public class MemberEntity {
 	
 	String userName;
 	
-	private String birthday;
+	String birthday;
 	  
-    private String email;
+    String email;
   
-    private String phone;
+    String phone;
   
-    private String address;
+    String address;
   
-    private String gender;
+    String gender;
 
 	  
 }

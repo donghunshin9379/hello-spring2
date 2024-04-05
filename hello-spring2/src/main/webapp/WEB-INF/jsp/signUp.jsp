@@ -6,6 +6,19 @@
 <meta charset="UTF-8">
 <title>회원가입 화면</title>
 </head>
+<% 
+    String errorMessage = (String)request.getAttribute("errorMessage"); // errorMessage 값을 받아옵니다.
+    if (errorMessage != null && !errorMessage.isEmpty()) { // errorMessage가 null이 아니고 비어 있지 않은 경우에만 alert 창을 띄웁니다.
+%>
+<script>
+//var yourObject = document.getElementById('error').getAttribute('data-yourobject');
+//console.log(yourObject);
+
+alert('<%= errorMessage %>'); // errorMessage를 alert 창으로 띄웁니다.
+</script>
+<%
+}
+%>
 <body>
 	<form action="/doSignUp" method="post">
 		<label for="id">아이디:</label>
@@ -43,5 +56,8 @@
 
 	    <button type="submit">회원가입</button>
 	</form>
+	<!-- 에러 메시지 표시 -->
+	<div id="error" data-yourobject = "${errorMessage}"></div>
+
 </body>
 </html>

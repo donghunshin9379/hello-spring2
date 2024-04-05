@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional //DATA CRUD 실패시 ROLLBACK용
 public class MemberDataHandlerImpl implements MemberDataHandler{
-	 MemberDAO memberDAO;
+	  MemberDAO memberDAO;
 	 
 	  @Autowired
 	  public MemberDataHandlerImpl(MemberDAO memberDAO){
@@ -28,4 +28,17 @@ public class MemberDataHandlerImpl implements MemberDataHandler{
 
 	    return memberDAO.saveMember(memberEntity);
 	  }
+	  
+	  public MemberEntity getMemberByUserId(String userId) {
+		  
+		return memberDAO.getMemberByUserId(userId);
+	  }
+
+	  @Override
+	  public boolean isUserIdExists(String userId) {
+		  
+		return memberDAO.isUserIdExists(userId);
+	  }
+
+	  
 }
