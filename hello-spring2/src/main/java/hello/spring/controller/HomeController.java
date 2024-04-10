@@ -12,12 +12,9 @@ public class HomeController {
 private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	@GetMapping("/home")	 //@RequestParam(required = false) 요구가 필수 아님X // @RequestParam(required = false)
-	public String home(String signUpSuccess, Model model) {
+	public String home() {
 	    logger.info("@@@@@@@home controller");
 	    
-	    if (signUpSuccess.equals("success")) {
-	    	model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
-	    }
 	    return "home";
 	}
 	

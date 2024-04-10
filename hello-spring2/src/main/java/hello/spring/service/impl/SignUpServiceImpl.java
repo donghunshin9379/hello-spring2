@@ -24,6 +24,13 @@ public class SignUpServiceImpl implements SignUpService {
 	  
 	  @Override
 	  public MemberDTO saveMember(MemberDTO memberDTO) {
+		  //비밀번호 암호화(passwordEncoder)
+		  String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+		  String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
+		  //memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
+		  memberDTO.setPassword(encodedPassword);
+		  memberDTO.setPasswordCheck(encodedPasswordCheck);
+		  
 		  // dataHandler값을 받아서 entity에 넣음
 		  MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
 		  MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
