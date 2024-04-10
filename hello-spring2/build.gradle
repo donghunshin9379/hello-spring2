@@ -36,9 +36,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	runtimeOnly 'com.h2database:h2'
 	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
-	
 	//Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'    /* Spring security */
+	 // jQuery 의존성
+    implementation 'org.webjars:jquery:3.5.1' 
 }
     
 

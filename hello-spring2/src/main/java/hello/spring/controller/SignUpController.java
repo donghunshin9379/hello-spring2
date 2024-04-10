@@ -37,26 +37,38 @@ public class SignUpController {
 	//회원가입 실행
 	@PostMapping("/doSignUp")
 	public String doSignUp(MemberDTO memberDTO, Model model) {
-		//
 		// 중복확인을 위해 아이디값 받아옴
 		String userId = memberDTO.getUserId();
 		
-		// 아이디 존재 확인
+		// 가져온 아이디값 중복 확인
 		boolean result = signUpService.isUserIdExists(userId);
 		
 		// 중복 확인용 검색 아이디
-		MemberDTO member = signUpService.getMemberByUserId(userId); 
+//		MemberDTO member = signUpService.getMemberByUserId(userId); 
+//		logger.info("@@@@@@@겟멤버 {}", member.toString()); 
 		
-		if (result == true && member.getUserId().equals(userId)) {
+		if (result == true) {
 	        // 중복된 아이디가 있을 경우
 	        model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
-	        logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); //
+	        logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
 	        return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
-	    }
+	        
+	    } else {
 		
+//		// 비밀번호 일치 확인
+//		String password = memberDTO.getPassword();
+//		String passwordCheck = memberDTO.getPasswordCheck();
+//		
+//		if (!password.equals(passwordCheck)) {
+//			model.addAttribute("passwordCheckError", "비밀번호가 일치하지않습니다.");
+//			logger.info("@@@@@@@비밀번호 불일치 {}", memberDTO.getPassword()); 
+//			logger.info("@@@@@@@비밀번호확인 불일치~ {}", memberDTO.getPasswordCheck()); 
+//			return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
+//		}
 		signUpService.saveMember(memberDTO);
 	    logger.info("doSignUp@@@@@@@{}", memberDTO.toString()); //@@@@@@@{} 중괄호 안에 뒷값이 표시됨
-	    return "home";
+	    return "redirect:home?signUpSuccess=success"; //return 하면 URL 안바뀌고 화면만 바뀜 redirect:는 URL 바뀜
+	    }
 	}
 	
 	@GetMapping("/getMember")	 
@@ -66,5 +78,7 @@ public class SignUpController {
 		logger.info("getMemberByUserId@@@@@@@{}", member.toString()); //@@@@@@@{} 중괄호 안에 뒷값이 표시됨
 		return "info";
 	}
+	
+	
 	
 }
