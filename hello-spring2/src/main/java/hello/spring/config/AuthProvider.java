@@ -25,7 +25,7 @@ public class AuthProvider implements AuthenticationProvider {
 	 private static final Logger logger = LoggerFactory.getLogger(AuthProvider.class);
 	 
 	    @Autowired
-	    private SignUpService signUpService;
+	    private SignUpService signUpService;  
 
 	    @Override
 	    public Authentication authenticate(Authentication authentication) throws AuthenticationException {

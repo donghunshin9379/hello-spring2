@@ -42,7 +42,7 @@ public class SignUpController {
 		
 		// 가져온 아이디값 중복 확인
 		boolean result = signUpService.isUserIdExists(userId);
-		
+		  
 		if (result == true) {
 	        // 중복된 아이디가 있을 경우
 	        model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
