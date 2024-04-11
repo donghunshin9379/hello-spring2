@@ -46,7 +46,7 @@ public class SpringSecurityConfig {
                     //.failureHandler(authenticationFailureHandler)
             )
             .logout((logoutConfig) ->
-                logoutConfig.logoutSuccessUrl("/")                              // 로그아웃 시 url
+                logoutConfig.logoutSuccessUrl("/logoutGo")                              // 로그아웃 시 url
             )
 
         // Exception

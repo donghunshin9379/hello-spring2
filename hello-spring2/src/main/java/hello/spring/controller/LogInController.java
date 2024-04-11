@@ -22,4 +22,9 @@ private static final Logger logger = LoggerFactory.getLogger(LogInController.cla
 	    return "loginSuccess";
 	}
 	
+	@GetMapping("/logoutGo")
+	public String logOut() {
+	    logger.info("@@@@@@@logOut controller");
+	    return "logoutGo";
+	}
 }

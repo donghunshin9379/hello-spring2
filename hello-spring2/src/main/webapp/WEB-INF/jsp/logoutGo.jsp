@@ -4,14 +4,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>로그인 성공</title>
+<title>로그아웃 성공</title>
 </head>
 <body>
-    <h2>loginSuccess</h2>
+    <h2>logoutSuccess</h2>
         <div>
-        <h2>로그인 성공화면</h2>
+        <h2>로그아웃 성공화면</h2>
         </div>
-        <a href="logout">로그아웃</a>
-        <a href="home">홈 돌아가기</a>
 </body>
 </html>
