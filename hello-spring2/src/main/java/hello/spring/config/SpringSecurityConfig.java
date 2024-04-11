@@ -16,13 +16,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurityConfig {
 
     // private final static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-	// 비밀번호 암호화 해결 안됌!!
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-	
-
     //Security main
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,19 +29,20 @@ public class SpringSecurityConfig {
             .authorizeHttpRequests(authorizeRequest ->
                 authorizeRequest // 권한 부여 
                     //.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/getMember/").permitAll()  // 전체 권한 가능
+                    .requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/home").permitAll()  // 전체 권한 가능
                     .requestMatchers("/error/**").permitAll()       // 에러 권한
-                    //.requestMatchers("/user/**").hasAnyRole(new String[]{"ADMIN","USER"})         // 해당 권한만 가능하게
+                    //.requestMatchers("//**").hasAnyRole(new String[]{"ADMIN","USER"})         // 해당 권한만 가능하게
                     //.requestMatchers("/admin/**").hasAnyRole(new String[]{"ADMIN"})
-                    .anyRequest().permitAll()     // 권한있으면 가능
+                    
+                    .anyRequest().permitAll()     //지금은 모든 리퀘스트 열려있는 상태 (수정해야됌)
             )
             .formLogin((formLogin) ->
                 formLogin
-                    .loginPage("/login")                                      // 로그인 url
+                    .loginPage("/login")// 로그인 url
                     .usernameParameter("userId")
                     .passwordParameter("password")
-                    .loginProcessingUrl("/auth")                                // 인증절차(로그인 처리) url
-                    .defaultSuccessUrl("/home",true)       // 로그인 성공 url
+                    .loginProcessingUrl("/auth")// 인증절차(로그인 처리) url
+                    .defaultSuccessUrl("/loginSuccess",true)// 로그인 성공 url
                     //.failureHandler(authenticationFailureHandler)
             )
             .logout((logoutConfig) ->

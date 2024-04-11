@@ -39,5 +39,5 @@ public class MemberEntity {
   
     String gender;
 
-	  
+    String role;  
 }

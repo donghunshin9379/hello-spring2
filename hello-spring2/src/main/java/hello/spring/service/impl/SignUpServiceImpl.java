@@ -37,7 +37,7 @@ public class SignUpServiceImpl implements SignUpService {
 				  	memberEntity.getPassword(), memberEntity.getPasswordCheck(),
 				  	memberEntity.getUserName(), memberEntity.getBirthday(),
 				  	memberEntity.getEmail(), memberEntity.getPhone(),
-				  	memberEntity.getAddress(), memberEntity.getGender());
+				  	memberEntity.getAddress(), memberEntity.getGender(), memberEntity.getRole());
 		  return memberDTO2;
 	  }
 
@@ -49,7 +49,7 @@ public class SignUpServiceImpl implements SignUpService {
 				  	memberEntity.getPassword(), memberEntity.getPasswordCheck(),
 				  	memberEntity.getUserName(), memberEntity.getBirthday(),
 				  	memberEntity.getEmail(), memberEntity.getPhone(),
-				  	memberEntity.getAddress(), memberEntity.getGender());
+				  	memberEntity.getAddress(), memberEntity.getGender(), memberEntity.getRole());
 		  return member;
 	  }
 

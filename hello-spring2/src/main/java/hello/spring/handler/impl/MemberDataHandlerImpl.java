@@ -24,7 +24,7 @@ public class MemberDataHandlerImpl implements MemberDataHandler{
 				  	memberDTO.getPassword(), memberDTO.getPasswordCheck(),
 				  	memberDTO.getUserName(), memberDTO.getBirthday(),
 				  	memberDTO.getEmail(), memberDTO.getPhone(),
-				  	memberDTO.getAddress(), memberDTO.getGender());
+				  	memberDTO.getAddress(), memberDTO.getGender(), memberDTO.getRole());
 
 	    return memberDAO.saveMember(memberEntity);
 	  }
