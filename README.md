@@ -60,27 +60,27 @@
   
   ```
   //회원가입 실행
-	@PostMapping("/doSignUp")
-	public String doSignUp(MemberDTO memberDTO, Model model) {
-		// 중복확인을 위해 아이디값 받아옴
-		String userId = memberDTO.getUserId();
-		
-		// 가져온 아이디값 중복 확인
-		boolean result = signUpService.isUserIdExists(userId);
-		  
-		if (result == true) {
-	        // 중복된 아이디가 있을 경우
-	        model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
-	        logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
-	        return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
-	        
-	    } else {
-		signUpService.saveMember(memberDTO);
-	    logger.info("doSignUp@@@@@@@{}", memberDTO.toString()); //@@@@@@@{} 중괄호 안에 뒷값이 표시됨
-	    model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
-	    return "home";
-	    }
-	}
+@PostMapping("/doSignUp")
+public String doSignUp(MemberDTO memberDTO, Model model) {
+// 중복확인을 위해 아이디값 받아옴
+String userId = memberDTO.getUserId();
+
+// 가져온 아이디값 중복 확인
+boolean result = signUpService.isUserIdExists(userId);
+  
+if (result == true) {
+// 중복된 아이디가 있을 경우
+model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
+logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
+return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
+	
+} else {
+signUpService.saveMember(memberDTO);
+logger.info("doSignUp@@@@@@@{}", memberDTO.toString()); //@@@@@@@{} 중괄호 안에 뒷값이 표시됨
+model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
+return "home";
+}
+}
 ```
 
 위의 코드에서 중복되는 아이디가 없을 경우 signUpService.saveMember(memberDTO); 가 호출되며 home.jsp로 signUpSuccess 메세지가 전달됩니다.
@@ -91,24 +91,24 @@ memberDataHandler.saveMemberEntity(memberDTO); 를 사용하여 memberDTO로 반
 그리고 MemberEntity에 저장된 정보를 이용하여 새로운 memberDTO2를 반환하는데 이 객체에는 DB에 저장된 회원정보가 담겨 있습니다.
 ```
 @Override
-	  public MemberDTO saveMember(MemberDTO memberDTO) {
-		  //비밀번호 암호화(passwordEncoder)
-		  String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
-		  String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
+public MemberDTO saveMember(MemberDTO memberDTO) {
+//비밀번호 암호화(passwordEncoder)
+String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
 
-		  //memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
-		  memberDTO.setPassword(encodedPassword);
-		  memberDTO.setPasswordCheck(encodedPasswordCheck);
-		  
-		  // dataHandler값을 받아서 entity에 넣음
-		  MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
-		  MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
-				  	memberEntity.getPassword(), memberEntity.getPasswordCheck(),
-				  	memberEntity.getUserName(), memberEntity.getBirthday(),
-				  	memberEntity.getEmail(), memberEntity.getPhone(),
-				  	memberEntity.getAddress(), memberEntity.getGender(), memberEntity.getRole());
-		  return memberDTO2;
-	  }
+//memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
+memberDTO.setPassword(encodedPassword);
+memberDTO.setPasswordCheck(encodedPasswordCheck);
+
+// dataHandler값을 받아서 entity에 넣음
+MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
+MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
+memberEntity.getPassword(), memberEntity.getPasswordCheck(),
+memberEntity.getUserName(), memberEntity.getBirthday(),
+memberEntity.getEmail(), memberEntity.getPhone(),
+memberEntity.getAddress(), memberEntity.getGender(), memberEntity.getRole());
+return memberDTO2;
+}
 ```
 더 상세하게 보면 SignUpService > MemberDataHandler > MemberDAO > MemberRepository  순으로 진행되는데, 순서대로 코드를 확인하면 
 아래와 같은 순서로 진행됩니다.
@@ -116,27 +116,26 @@ memberDataHandler.saveMemberEntity(memberDTO); 를 사용하여 memberDTO로 반
 MemberDataHandler 코드
 ```
 public MemberEntity saveMemberEntity(MemberDTO memberDTO) {
-		  MemberEntity memberEntity = new MemberEntity(memberDTO.getUserId(),
-				  	memberDTO.getPassword(), memberDTO.getPasswordCheck(),
-				  	memberDTO.getUserName(), memberDTO.getBirthday(),
-				  	memberDTO.getEmail(), memberDTO.getPhone(),
-				  	memberDTO.getAddress(), memberDTO.getGender(), memberDTO.getRole());
-
-	    return memberDAO.saveMember(memberEntity);
-	  }
+MemberEntity memberEntity = new MemberEntity(memberDTO.getUserId(),
+memberDTO.getPassword(), memberDTO.getPasswordCheck(),
+memberDTO.getUserName(), memberDTO.getBirthday(),
+memberDTO.getEmail(), memberDTO.getPhone(),
+memberDTO.getAddress(), memberDTO.getGender(), memberDTO.getRole());
+return memberDAO.saveMember(memberEntity);
+}
 ```
 MemberDAO 코드
 ```
- @Override
-  public MemberEntity saveMember(MemberEntity memberEntity) {
-	memberRepository.save(memberEntity);
-	return memberEntity;
-  }
+@Override
+public MemberEntity saveMember(MemberEntity memberEntity) {
+  memberRepository.save(memberEntity);
+  return memberEntity;
+}
 ```
 
 MemberRepository 인터페이스
 ```
-                                      //레포짓터리가 사용할 Entity, primary key
+//레포짓터리가 사용할 Entity, primary key
 public interface MemberRepository extends JpaRepository<MemberEntity, String> {
 }
 ```
@@ -154,21 +153,21 @@ SignUpService는 MemberDataHandler를 호출하여 회원가입 프로세스를 
 하지만 만약 중복되는 아이디가 존재 하는 경우라면?
 ```
 @PostMapping("/doSignUp")
-	public String doSignUp(MemberDTO memberDTO, Model model) {
-		// 중복확인을 위해 아이디값 받아옴
-		String userId = memberDTO.getUserId();
-		
-		// 가져온 아이디값 중복 확인
-		boolean result = signUpService.isUserIdExists(userId);
-		  
-		if (result == true) {
-	        // 중복된 아이디가 있을 경우
-	        model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
-	        logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
-	        return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
-        }
-	    }
-	}
+public String doSignUp(MemberDTO memberDTO, Model model) {
+// 중복확인을 위해 아이디값 받아옴
+String userId = memberDTO.getUserId();
+
+// 가져온 아이디값 중복 확인
+boolean result = signUpService.isUserIdExists(userId);
+  
+if (result == true) {
+// 중복된 아이디가 있을 경우
+model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
+logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
+return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
+}
+}
+	
 ```
 위와 같이 앞단(signUp.jsp)에서 입력된 아이디값을 기반으로 signUpService.isUserIdExists(userId); 가 호출되며 return된 값이
 boolean 타입 result에 저장됩니다.
@@ -178,8 +177,8 @@ boolean 타입 result에 저장됩니다.
 아래는 회원 가입 프로세스의 마지막 단계인 데이터베이스 조회 및 확인 작업을 처리하는 코드입니다.
 ```
 public interface MemberRepository extends JpaRepository<MemberEntity, String> {
-  ~~~
-	boolean existsByUserId(String userId);
+
+boolean existsByUserId(String userId);
 }
 ```
 
@@ -206,17 +205,17 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String> {
   
   (설명을 위해 잘라온 코드입니다)
   ```
-  $(document).ready(function() {
-    // 비밀번호 확인
-    $("#passwordCheck").blur(function(){
-        if($("#passwordCheck").val() === $("#password").val()){
-            $(".successPwChk").text("비밀번호가 일치합니다.").css("color", "green");
-            $("#pwDoubleChk").val("true");
-        } else {
-            $(".successPwChk").text("비밀번호가 일치하지 않습니다.").css("color", "red");
-            $("#pwDoubleChk").val("false");
-        }
-    });
+$(document).ready(function() {
+// 비밀번호 확인
+$("#passwordCheck").blur(function(){
+if($("#passwordCheck").val() === $("#password").val()){
+    $(".successPwChk").text("비밀번호가 일치합니다.").css("color", "green");
+    $("#pwDoubleChk").val("true");
+} else {
+    $(".successPwChk").text("비밀번호가 일치하지 않습니다.").css("color", "red");
+    $("#pwDoubleChk").val("false");
+}
+});
   ```
 위와같이 비밀번호확인 값 입력후, 포커스를 벗어날 때(마우스 클릭 or 다음으로 넘어가는 상황) 실행되는데
 이때 입력된 password값과 passwordCheck 값이 비교됩니다.
@@ -241,31 +240,30 @@ Spring Security를 이용하여 사용자가 제공한 인증 정보와 데이�
   상단 사용자 화면에서 아이디값과 비밀번호값을 입력한 후, Login 버튼을 누르면 아래의 SpringSeucirtyConfig 클래스를 통해
   로그인 절차가 진행됩니다.
   ```
-  //Security main
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//Security main
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-            .csrf(AbstractHttpConfigurer::disable) //csrf 보안 관련 내용
-            .authorizeHttpRequests(authorizeRequest ->
-                authorizeRequest // 권한 부여 
-                    .requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/home").permitAll()  //전체 권한 가능
-                    .requestMatchers("/error/**").permitAll()       // 에러 권한
-                    .anyRequest().permitAll() //지금은 모든 리퀘스트 열려있는 상태 (수정해야됌)
-            )
-            .formLogin((formLogin) ->
-                formLogin
-                    .loginPage("/login") // 로그인 url
-                    .usernameParameter("userId")
-                    .passwordParameter("password")
-                    .loginProcessingUrl("/auth")// 인증절차(로그인 처리) url
-                    .defaultSuccessUrl("/loginSuccess",true) // 로그인 성공 url
-            )
-            .logout((logoutConfig) ->
-                logoutConfig.logoutSuccessUrl("/logoutGo") // 로그아웃 시 url
-            );
-        return http.build();
-    }
+http
+.csrf(AbstractHttpConfigurer::disable) //csrf 보안 관련 내용
+.authorizeHttpRequests(authorizeRequest -> authorizeRequest // 권한 부여 
+.requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/home").permitAll()  //전체 권한 가능
+.requestMatchers("/error/**").permitAll()       // 에러 권한
+.anyRequest().permitAll() //지금은 모든 리퀘스트 열려있는 상태 (수정해야됌)
+)
+.formLogin((formLogin) ->
+formLogin
+.loginPage("/login") // 로그인 url
+.usernameParameter("userId")
+.passwordParameter("password")
+.loginProcessingUrl("/auth")// 인증절차(로그인 처리) url
+.defaultSuccessUrl("/loginSuccess",true) // 로그인 성공 url
+)
+.logout((logoutConfig) ->
+logoutConfig.logoutSuccessUrl("/logoutGo") // 로그아웃 시 url
+);
+return http.build();
+}
 ```
 
 위의 코드에서 로그인 인증절차인 .loginProcessingUrl("/auth")가 호출되면 SpringSecurity에서 자동으로 UserDetailsService 인터페이스 IOC를 찾게 되는데
@@ -275,26 +273,26 @@ Spring Security를 이용하여 사용자가 제공한 인증 정보와 데이�
 ```
 //SpringSecurity(/auth)에서 UserDetailsServic참조된 서비스를 자동으로 찾아 진행시킴
 public class PrincipalDetailsService implements UserDetailsService {
-	@Autowired
-	private MemberRepository memberRepository;
-	private PasswordEncoder passwordEncoder;
+@Autowired
+private MemberRepository memberRepository;
+private PasswordEncoder passwordEncoder;
 
-	@Override
-	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-		MemberEntity memberEntity = memberRepository.findByUserId(userId);
+@Override
+public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+MemberEntity memberEntity = memberRepository.findByUserId(userId);
 
-		// 비밀번호 암호화(passwordEncoder)
-		// memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
+// 비밀번호 암호화(passwordEncoder)
+// memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
 
-		MemberDTO member = new MemberDTO(memberEntity.getUserId(), passwordEncoder.encode(memberEntity.getPassword()),
-				passwordEncoder.encode(memberEntity.getPasswordCheck()), memberEntity.getUserName(), memberEntity.getBirthday(),
-				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-				memberEntity.getRole());
-		if (member != null) {
-			return new PrincipalDetails(member); // 권한을 부여함
-		}
-		return null;
-	}
+MemberDTO member = new MemberDTO(memberEntity.getUserId(), passwordEncoder.encode(memberEntity.getPassword()),
+passwordEncoder.encode(memberEntity.getPasswordCheck()), memberEntity.getUserName(), memberEntity.getBirthday(),
+memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
+memberEntity.getRole());
+if (member != null) {
+	return new PrincipalDetails(member); // 권한을 부여함
+}
+return null;
+}
 
 }
 ```
@@ -319,43 +317,43 @@ Spring Security의 설정 파일(SecurityConfig 클래스)에는 인증이 성�
 ```
 @Component
 public class AuthProvider implements AuthenticationProvider {
-	private static final Logger logger = LoggerFactory.getLogger(AuthProvider.class);
+private static final Logger logger = LoggerFactory.getLogger(AuthProvider.class);
 
-	@Autowired
-	private SignUpService signUpService;
+@Autowired
+private SignUpService signUpService;
 
-	@Override
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		String userId = (String) authentication.getPrincipal(); // 로그인 창에 입력한 userId
-		String password = (String) authentication.getCredentials(); // 로그인 창에 입력한 password
+@Override
+public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+String userId = (String) authentication.getPrincipal(); // 로그인 창에 입력한 userId
+String password = (String) authentication.getCredentials(); // 로그인 창에 입력한 password
 
-		PasswordEncoder passwordEncoder = signUpService.passwordEncoder();
-		UsernamePasswordAuthenticationToken token;
+PasswordEncoder passwordEncoder = signUpService.passwordEncoder();
+UsernamePasswordAuthenticationToken token;
 
-		MemberDTO memberDTO = signUpService.getMemberByUserId(userId);
+MemberDTO memberDTO = signUpService.getMemberByUserId(userId);
 
-		if (memberDTO != null && passwordEncoder.matches(password, memberDTO.getPassword())) { // 일치하는 user 정보가 있는지 확인
-			List<GrantedAuthority> roles = new ArrayList<>();
-			roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 권한 부여
+if (memberDTO != null && passwordEncoder.matches(password, memberDTO.getPassword())) { 
+List<GrantedAuthority> roles = new ArrayList<>();
+roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 권한 부여
 
-			logger.info("roles : {}", roles);
-			token = new UsernamePasswordAuthenticationToken(memberDTO.getUserId(), null, roles);
-			// 인증된 user 정보를 담아 SecurityContextHolder에 저장되는 token
+logger.info("roles : {}", roles);
+token = new UsernamePasswordAuthenticationToken(memberDTO.getUserId(), null, roles);
+// 인증된 user 정보를 담아 SecurityContextHolder에 저장되는 token
 
-			logger.info("memberDTO 정보 : {} ", memberDTO.toString());
-			if (memberDTO.getUserId().equals("admin")) {
-				roles.add(new SimpleGrantedAuthority("ROLE_ADMIN")); // 권한 부여
-			}
-			return token;
-		}
-		// if 반대 방향 던짐
-		throw new BadCredentialsException("No such user or wrong password.");
+logger.info("memberDTO 정보 : {} ", memberDTO.toString());
+if (memberDTO.getUserId().equals("admin")) {
+	roles.add(new SimpleGrantedAuthority("ROLE_ADMIN")); // 권한 부여
+}
+return token;
+}
+// if 반대 방향 던짐
+throw new BadCredentialsException("No such user or wrong password.");
 }
 
-	@Override
-	public boolean supports(Class<?> authentication) {
-		return authentication.equals(UsernamePasswordAuthenticationToken.class);
-	}
+@Override
+public boolean supports(Class<?> authentication) {
+	return authentication.equals(UsernamePasswordAuthenticationToken.class);
+}
 }
 
 ```
@@ -384,23 +382,23 @@ Spring Security의 PasswordEncoder 인터페이스를 구현한 BCryptPasswordEn
   encode기능을 활용합니다. 예를 들어 회원가입 기능인 saveMember에서 적용시키면 아래와 같이 진행됩니다.
 
   ```
- @Override
-	  public MemberDTO saveMember(MemberDTO memberDTO) {
-		  //비밀번호 암호화(passwordEncoder)
-		  String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
-		  String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
-		  //memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
-		  memberDTO.setPassword(encodedPassword);
-		  memberDTO.setPasswordCheck(encodedPasswordCheck);
-		  
-		  // dataHandler값을 받아서 entity에 넣음
-		  MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
-		  MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
-				  	memberEntity.getPassword(), memberEntity.getPasswordCheck(),
-				  	memberEntity.getUserName(), memberEntity.getBirthday(),
-				  	memberEntity.getEmail(), memberEntity.getPhone(),
-				  	memberEntity.getAddress(), memberEntity.getGender(), memberEntity.getRole());
-		  return memberDTO2;
+@Override
+public MemberDTO saveMember(MemberDTO memberDTO) {
+//비밀번호 암호화(passwordEncoder)
+String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
+//memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
+memberDTO.setPassword(encodedPassword);
+memberDTO.setPasswordCheck(encodedPasswordCheck);
+
+// dataHandler값을 받아서 entity에 넣음
+MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
+MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
+memberEntity.getPassword(), memberEntity.getPasswordCheck(),
+memberEntity.getUserName(), memberEntity.getBirthday(),
+memberEntity.getEmail(), memberEntity.getPhone(),
+memberEntity.getAddress(), memberEntity.getGender(), memberEntity.getRole());
+return memberDTO2;
 	  }
 ```
 암호화된 비밀번호 확인 시점
