@@ -249,7 +249,7 @@ http
 .authorizeHttpRequests(authorizeRequest -> authorizeRequest // 권한 부여 
 .requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/home").permitAll()  //전체 권한 가능
 .requestMatchers("/error/**").permitAll()       // 에러 권한
-.anyRequest().permitAll() //지금은 모든 리퀘스트 열려있는 상태 (수정해야됌)
+.anyRequest().permitAll() 
 )
 .formLogin((formLogin) ->
 formLogin
