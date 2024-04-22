@@ -8,23 +8,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class LogInController {
-private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
+
 	@GetMapping("/login")
 	public String logIn() {
-	    logger.info("@@@@@@@logIn controller");
-	    return "logingo";
+		logger.info("@@@@@@@logIn controller");
+		return "logingo";
 	}
-	
+
 	@GetMapping("/loginSuccess")
 	public String loginSuccess() {
-	    logger.info("@@@@@@@loginSuccess controller");
-	    return "loginSuccess";
+		logger.info("@@@@@@@loginSuccess controller");
+		return "loginSuccess";
 	}
-	
+
 	@GetMapping("/logoutGo")
 	public String logOut() {
-	    logger.info("@@@@@@@logOut controller");
-	    return "logoutGo";
+		logger.info("@@@@@@@logOut controller");
+		return "logoutGo";
 	}
 }

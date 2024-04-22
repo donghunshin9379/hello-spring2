@@ -11,5 +11,6 @@
         <div>
         <h2>로그아웃 성공화면</h2>
         </div>
+        <a href="home">홈으로 돌아가기</a>
 </body>
 </html>

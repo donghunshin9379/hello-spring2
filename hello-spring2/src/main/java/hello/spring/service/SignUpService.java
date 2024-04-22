@@ -17,5 +17,5 @@ public interface SignUpService {
   public PasswordEncoder passwordEncoder();
 
   public boolean isUserIdExists(String userId);
-  
+
 }

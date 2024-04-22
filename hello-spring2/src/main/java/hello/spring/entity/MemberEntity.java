@@ -17,27 +17,27 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "member") //DB 속성을 담는게 ENtity(field값)
+@Table(name = "member") // DB 속성을 담는게 ENtity(field값)
 public class MemberEntity {
 
 	@Id
 	String userId;
-	
-	String password;
-	
-	String passwordCheck;
-	
-	String userName;
-	
-	String birthday;
-	  
-    String email;
-  
-    String phone;
-  
-    String address;
-  
-    String gender;
 
-    String role;  
+	String password;
+
+	String passwordCheck;
+
+	String userName;
+
+	String birthday;
+
+	String email;
+
+	String phone;
+
+	String address;
+
+	String gender;
+
+	String role;
 }

@@ -7,5 +7,4 @@ public interface MemberDataHandler {
 	 MemberEntity saveMemberEntity(MemberDTO memberDTO);
 	 MemberEntity getMemberByUserId(String userId);
 	 boolean isUserIdExists(String userId);
-	
 }

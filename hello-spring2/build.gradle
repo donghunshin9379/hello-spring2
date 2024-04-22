@@ -40,6 +40,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'    /* Spring security */
 	 // jQuery 의존성
     implementation 'org.webjars:jquery:3.5.1' 
+    // mail 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
     
 
