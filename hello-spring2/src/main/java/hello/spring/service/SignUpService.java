@@ -18,4 +18,5 @@ public interface SignUpService {
 
   public boolean isUserIdExists(String userId);
 
+  public MemberDTO updateMember(MemberDTO memberDTO);
 }

@@ -1,9 +1,10 @@
 package hello.spring.controller;
 
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,12 +54,29 @@ public class SignUpController {
 		}
 	}
 
+	// 회원정보 가져오기
 	@GetMapping("/getMember")
-	public String getMemberByUserId(@RequestParam("userId") String userId, Model model) { // String으로 반환해야 jsp로 감
-		MemberDTO member = signUpService.getMemberByUserId(userId);
+	public String getMemberByUserId(Model model) { // userId 파라미터 제거
+		// 인증된 사용자의 아이디 가져오기
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String loggedInUserId = authentication.getName();
+		// 이제 loggedInUserId를 사용하여 회원 정보를 조회하고 필요한 작업을 수행합니다.
+
+		MemberDTO member = signUpService.getMemberByUserId(loggedInUserId);
 		model.addAttribute("member", member); // (내가담을 명칭, 뒤는 데이터 담김)
 		logger.info("getMemberByUserId@@@@@@@{}", member.toString());
-		return "info";
+		return "updateInfo";
+	}
+
+	// 회원정보 수정실행
+	@PostMapping("/updateInfoGo")
+	public String updateInfoGo(MemberDTO memberDTO, Model model) {
+		
+		signUpService.saveMember(memberDTO);
+		
+		logger.info("updateInfoGo@@@@@@@{}", memberDTO.toString());
+		model.addAttribute("updateInfoGoSuccess", "회원정보 수정이 완료 되었습니다.");
+		return "updateInfoSuccess";
 	}
 
 }

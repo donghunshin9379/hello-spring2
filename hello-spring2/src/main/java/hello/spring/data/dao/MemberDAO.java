@@ -8,4 +8,6 @@ public interface MemberDAO {
 	MemberEntity getMemberByUserId(String userId);
 
 	boolean isUserIdExists(String userId);
+	
+	MemberEntity updateMember(MemberEntity memberEntity);
 }

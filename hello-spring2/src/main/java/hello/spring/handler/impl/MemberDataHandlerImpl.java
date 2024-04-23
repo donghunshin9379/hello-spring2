@@ -38,4 +38,13 @@ public class MemberDataHandlerImpl implements MemberDataHandler {
 		return memberDAO.isUserIdExists(userId);
 	}
 
+	@Override
+	public MemberEntity updateMemberEntity(MemberDTO memberDTO) {
+		MemberEntity memberEntity = new MemberEntity(memberDTO.getUserId(), memberDTO.getPassword(),
+		memberDTO.getPasswordCheck(), memberDTO.getUserName(), memberDTO.getBirthday(), memberDTO.getEmail(),
+		memberDTO.getPhone(), memberDTO.getAddress(), memberDTO.getGender(), memberDTO.getRole());
+
+		return memberDAO.updateMember(memberEntity);
+	}
+
 }

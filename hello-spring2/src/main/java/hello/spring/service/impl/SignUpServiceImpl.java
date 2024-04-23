@@ -34,9 +34,9 @@ public class SignUpServiceImpl implements SignUpService {
 		// dataHandler값을 받아서 entity에 넣음
 		MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
 		MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(), memberEntity.getPassword(),
-		memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
-		memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-		memberEntity.getRole());
+				memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
+				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
+				memberEntity.getRole());
 		return memberDTO2;
 	}
 
@@ -45,9 +45,9 @@ public class SignUpServiceImpl implements SignUpService {
 		// 클래스 객체에 담아서 보냄
 		MemberEntity memberEntity = memberDataHandler.getMemberByUserId(userId);
 		MemberDTO member = new MemberDTO(memberEntity.getUserId(), memberEntity.getPassword(),
-		memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
-		memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-		memberEntity.getRole());
+				memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
+				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
+				memberEntity.getRole());
 		return member;
 	}
 
@@ -60,6 +60,25 @@ public class SignUpServiceImpl implements SignUpService {
 	@Override
 	public PasswordEncoder passwordEncoder() { // Singletone으로 이루어져있으니까(이미 있는 하나의 객체를 사용함)
 		return this.passwordEncoder;
+	}
+
+	@Override
+	public MemberDTO updateMember(MemberDTO memberDTO) {
+		// 비밀번호 암호화(passwordEncoder)
+		String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+		String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
+		// memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
+		memberDTO.setPassword(encodedPassword);
+		memberDTO.setPasswordCheck(encodedPasswordCheck);
+
+		// dataHandler값을 받아서 entity에 넣음
+		MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
+		
+		MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(), memberEntity.getPassword(),
+		memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
+		memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
+		memberEntity.getRole());
+		return memberDTO2;
 	}
 
 }

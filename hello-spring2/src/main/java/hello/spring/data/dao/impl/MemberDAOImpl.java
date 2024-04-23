@@ -34,4 +34,11 @@ public class MemberDAOImpl implements MemberDAO {
 		return memberRepository.existsByUserId(userId);
 	}
 
+	@Override
+	public MemberEntity updateMember(MemberEntity memberEntity) {
+		memberRepository.save(memberEntity);
+		return memberEntity;
+	}
+	
+	
 }
