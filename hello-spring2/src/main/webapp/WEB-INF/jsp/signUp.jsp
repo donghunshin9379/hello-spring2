@@ -52,6 +52,7 @@ $(document).ready(function() {
                 $("#emailAuthCode").prop("disabled", true);
                 $("#emailChk").val("true");
                 alert("이메일 인증이 완료되었습니다.");
+                $("#verifyEmail").prop("disabled", true);
             },
             error: function(xhr, status, error) {
                 $("#resultMessage").text(xhr.responseText).css("color", "red");
@@ -87,7 +88,7 @@ $(document).ready(function() {
 		<span class="point successPwChk"></span> <input type="hidden" id="pwDoubleChk" value=""><br><br>
 		<label for="name">이름:</label>
 		<input type="text" id="name" name="userName"><br><br>
-		<label for="birthdate">생년월일:</label> 
+		<label for="birthday">생년월일:</label> 
 		<input type="date" id="birthday" name="birthday"><br><br>
 		<label for="email">이메일:</label>
 		<input type="email" id="email" name="email">
