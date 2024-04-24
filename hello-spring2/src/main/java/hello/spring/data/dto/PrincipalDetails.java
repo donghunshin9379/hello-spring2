@@ -15,19 +15,19 @@ public class PrincipalDetails implements UserDetails {
 	}
 
 	// 해당 유저의 권한을 리턴하는 곳!
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// 이 ArrayList는 GrantedAuthority객체를 담음
-		Collection<GrantedAuthority> collect = new ArrayList<>();
-
-		collect.add(new GrantedAuthority() {
-			@Override
-			public String getAuthority() {
-				return memberDTO.getRole(); // 권한 get
-			}
-		});
-		return collect;
-	}
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities() {
+//		// 이 ArrayList는 GrantedAuthority객체를 담음
+//		Collection<GrantedAuthority> collect = new ArrayList<>();
+//
+//		collect.add(new GrantedAuthority() {
+//			@Override
+//			public String getAuthority() {
+//				return memberDTO.getRole(); // 권한 get
+//			}
+//		});
+//		return collect;
+//	}
 
 	@Override
 	public String getPassword() {
@@ -82,6 +82,12 @@ public class PrincipalDetails implements UserDetails {
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

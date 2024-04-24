@@ -4,20 +4,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>로그인 성공</title>
+<title>관리자 로그인 성공</title>
 </head>
 <body>
-    <h2>loginSuccess</h2>
+    <h2>adminLoginSuccess</h2>
         <div>
-        <h2>로그인 성공화면</h2>
+        <h2>관리자 로그인 성공화면</h2>
         </div>
-       	<div>
-       		<h2>유저정보</h2>
-       		<p>로그인 아이디 : </p>
-       		<p>로그인 이름 :</p>
-       		<p>로그인 role : </p>
-       	</div> 
-       
         <a href="logout">로그아웃</a>
         <a href="home">홈 돌아가기</a>
         <a href="getMember">회원정보 수정</a>

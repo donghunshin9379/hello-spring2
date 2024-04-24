@@ -27,8 +27,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
 		MemberDTO member = new MemberDTO(memberEntity.getUserId(), passwordEncoder.encode(memberEntity.getPassword()),
 				passwordEncoder.encode(memberEntity.getPasswordCheck()), memberEntity.getUserName(), memberEntity.getBirthday(),
-				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-				memberEntity.getRole());
+				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender());
 		if (member != null) {
 			return new PrincipalDetails(member); // 권한을 부여함
 		}

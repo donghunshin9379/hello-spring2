@@ -30,5 +30,4 @@ public class MemberDTO {
 
 	private String gender;
 
-	private String role;
 }

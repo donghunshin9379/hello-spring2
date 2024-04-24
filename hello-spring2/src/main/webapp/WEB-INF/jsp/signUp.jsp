@@ -23,7 +23,8 @@ $(document).ready(function() {
     
     // 이메일 인증번호 전송
     $("#emailAuth").click(function(event) {
-        event.preventDefault(); // 클릭 기본 동작 방지
+    	// 클릭 기본 동작 방지
+        event.preventDefault(); 
         var email = $("#email").val(); // 사용자가 입력한 이메일 값 가져오기
         $.ajax({
             url: "/emailAuth",
@@ -101,27 +102,5 @@ $(document).ready(function() {
 
 		<button type="submit">회원가입</button>
 	</form>
-	<!-- 에러 메시지 표시 -->
-	<div id="error" data-yourobject="${errorMessage}"></div>
-	<div id="passwordCheckError" data-yourobject="${passwordCheckError}"></div>
-	<div id="resultMessage"></div>
 </body>
-<%
-String errorMessage = (String) request.getAttribute("errorMessage");
-String passwordCheckError = (String) request.getAttribute("passwordCheckError");
-if (errorMessage != null && !errorMessage.isEmpty()) {
-%>
-<script>
-    alert('<%=errorMessage%>'); // errorMessage를 alert 창으로 띄웁니다.
-</script>
-<%
-}
-if (passwordCheckError != null && !passwordCheckError.isEmpty()) {
-%>
-<script>
-    alert('<%=passwordCheckError%>'); // passwordCheckError를 alert 창으로 띄웁니다.
-</script>
-<%
-}
-%>
 </html>

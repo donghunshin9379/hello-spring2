@@ -22,7 +22,7 @@ public class MemberDataHandlerImpl implements MemberDataHandler {
 	public MemberEntity saveMemberEntity(MemberDTO memberDTO) {
 		MemberEntity memberEntity = new MemberEntity(memberDTO.getUserId(), memberDTO.getPassword(),
 				memberDTO.getPasswordCheck(), memberDTO.getUserName(), memberDTO.getBirthday(), memberDTO.getEmail(),
-				memberDTO.getPhone(), memberDTO.getAddress(), memberDTO.getGender(), memberDTO.getRole());
+				memberDTO.getPhone(), memberDTO.getAddress(), memberDTO.getGender());
 
 		return memberDAO.saveMember(memberEntity);
 	}
@@ -42,7 +42,7 @@ public class MemberDataHandlerImpl implements MemberDataHandler {
 	public MemberEntity updateMemberEntity(MemberDTO memberDTO) {
 		MemberEntity memberEntity = new MemberEntity(memberDTO.getUserId(), memberDTO.getPassword(),
 		memberDTO.getPasswordCheck(), memberDTO.getUserName(), memberDTO.getBirthday(), memberDTO.getEmail(),
-		memberDTO.getPhone(), memberDTO.getAddress(), memberDTO.getGender(), memberDTO.getRole());
+		memberDTO.getPhone(), memberDTO.getAddress(), memberDTO.getGender());
 
 		return memberDAO.updateMember(memberEntity);
 	}

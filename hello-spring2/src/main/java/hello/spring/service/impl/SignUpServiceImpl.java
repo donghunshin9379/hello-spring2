@@ -35,8 +35,7 @@ public class SignUpServiceImpl implements SignUpService {
 		MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
 		MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(), memberEntity.getPassword(),
 				memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
-				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-				memberEntity.getRole());
+				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender());
 		return memberDTO2;
 	}
 
@@ -46,8 +45,7 @@ public class SignUpServiceImpl implements SignUpService {
 		MemberEntity memberEntity = memberDataHandler.getMemberByUserId(userId);
 		MemberDTO member = new MemberDTO(memberEntity.getUserId(), memberEntity.getPassword(),
 				memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
-				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-				memberEntity.getRole());
+				memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender());
 		return member;
 	}
 
@@ -76,8 +74,7 @@ public class SignUpServiceImpl implements SignUpService {
 		
 		MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(), memberEntity.getPassword(),
 		memberEntity.getPasswordCheck(), memberEntity.getUserName(), memberEntity.getBirthday(),
-		memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender(),
-		memberEntity.getRole());
+		memberEntity.getEmail(), memberEntity.getPhone(), memberEntity.getAddress(), memberEntity.getGender());
 		return memberDTO2;
 	}
 

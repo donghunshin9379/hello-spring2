@@ -51,7 +51,7 @@ public class SignUpController {
 			logger.info("doSignUp@@@@@@@{}", memberDTO.toString());
 			model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
 			return "home";
-		}
+ 		}
 	}
 
 	// 회원정보 가져오기

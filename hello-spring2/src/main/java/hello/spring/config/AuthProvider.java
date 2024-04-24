@@ -37,20 +37,23 @@ public class AuthProvider implements AuthenticationProvider {
 		// 좀더 직관적으로 받을수 있음 (PrincipalDetailsService에서 이미 DTO로 return함)
 		MemberDTO memberDTO = signUpService.getMemberByUserId(userId);
 
-		if (memberDTO != null && passwordEncoder.matches(password, memberDTO.getPassword())) { // 일치하는 user 정보가 있는지 확인
-			List<GrantedAuthority> roles = new ArrayList<>();
-			roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 권한 부여
+		if (memberDTO != null && passwordEncoder.matches(password, memberDTO.getPassword())) { 
+		    List<GrantedAuthority> roles = new ArrayList<>();
+		    // admin 인 경우에만 ROLE_ADMIN을 추가하고, 그 외에는 항상 ROLE_USER만 추가
+		    if (memberDTO.getUserId().equals("admin")) {
+		        roles.add(new SimpleGrantedAuthority("ROLE_ADMIN")); 
+		    } else {
+		        roles.add(new SimpleGrantedAuthority("ROLE_USER"));
+		    }
 
-			logger.info("roles : {}", roles);
-			token = new UsernamePasswordAuthenticationToken(memberDTO.getUserId(), null, roles);
-			// 인증된 user 정보를 담아 SecurityContextHolder에 저장되는 token
+		    logger.info("roles : {}", roles);
+		    token = new UsernamePasswordAuthenticationToken(memberDTO.getUserId(), null, roles);
 
-			logger.info("memberDTO 정보 : {} ", memberDTO.toString());
-			if (memberDTO.getUserId().equals("admin")) {
-				roles.add(new SimpleGrantedAuthority("ROLE_ADMIN")); // 권한 부여
-			}
-			return token;
+		    logger.info("memberDTO 정보 : {} ", memberDTO.toString());
+		    
+		    return token;
 		}
+
 
 		// ----------------------------------------------------------
 //	            

@@ -61,17 +61,5 @@ $(document).ready(function() {
 		<button type="submit">회원정보 수정</button>
 	</form>
 	
-	<!-- 에러 메시지 표시 -->
-	<div id="passwordCheckError" data-yourobject="${passwordCheckError}"></div>
 </body>
-<%
-String passwordCheckError = (String) request.getAttribute("passwordCheckError");
-if (passwordCheckError != null && !passwordCheckError.isEmpty()) {
-%>
-<script>
-    alert('<%=passwordCheckError%>'); // passwordCheckError를 alert 창으로 띄웁니다.
-</script>
-<%
-}
-%>
 </html>
