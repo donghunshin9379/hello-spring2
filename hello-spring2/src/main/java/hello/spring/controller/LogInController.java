@@ -17,9 +17,12 @@ import hello.spring.service.SignUpService;
 public class LogInController {
 	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
 	
-	@Autowired
-	private SignUpService signUpService;
+	private final SignUpService signUpService;
 	
+	public LogInController(SignUpService signUpService) {
+		this.signUpService = signUpService;
+	}
+
 	@GetMapping("/login")
 	public String logIn() {
 		logger.info("@@@@@@@logIn controller");
@@ -33,7 +36,7 @@ public class LogInController {
 	    // Authentication 객체 가져오기
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    
-	    // Principal 가져오기
+	    // Principal 가져오기(id만)
 	    String principal = authentication.getPrincipal().toString();
 	    logger.info("@@@@@@@principal : {}",principal);
 	    
@@ -48,6 +51,8 @@ public class LogInController {
 	    String authorities = authentication.getAuthorities().toString();
 	    
 	    logger.info("@@@@@권한{}", authorities);
+	    model.addAttribute("authorities", authorities);
+	    
 	    if (authorities.equals("[ROLE_ADMIN]")) {
 	        return "redirect:/admin";
 	    }

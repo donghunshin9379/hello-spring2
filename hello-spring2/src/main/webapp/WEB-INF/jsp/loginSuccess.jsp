@@ -15,6 +15,8 @@
        		<h2>유저정보</h2>
        		<p>로그인 아이디 : ${member.userId}</p>
        		<p>로그인 이름 : ${member.userName}</p>
+       		<p>로그인 권한 : ${authorities}</p>
+       		
        	</div> 
        
         <a href="logout">로그아웃</a>
