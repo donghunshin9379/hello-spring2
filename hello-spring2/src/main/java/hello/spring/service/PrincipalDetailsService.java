@@ -12,7 +12,7 @@ import hello.spring.data.dto.PrincipalDetails;
 import hello.spring.entity.MemberEntity;
 import hello.spring.repository.MemberRepository;
 
-//SpringSecurity(/auth)에서 UserDetailsServic참조된 서비스를 자동으로 찾아 진행시킴
+//SpringSecurity(/auth)에서 UserDetailsService 참조된 서비스를 자동으로 찾아 진행시킴
 public class PrincipalDetailsService implements UserDetailsService {
 	@Autowired
 	private MemberRepository memberRepository;
