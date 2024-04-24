@@ -1,9 +1,12 @@
 package hello.spring.controller;
 
 import java.util.HashMap;
+
 import java.util.Map;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,8 @@ import hello.spring.service.EmailService;
 
 @RestController
 public class EmailAuthController {
-
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private EmailService emailService;
 
@@ -41,9 +45,12 @@ public class EmailAuthController {
 	@PostMapping("/verifyEmail")
 	public ResponseEntity<String> verifyEmail(@RequestParam("email") String email, @RequestParam("code") String code) {
 		String savedCode = emailVerificationCodes.get(email);
+		logger.info("인증코드 {} : ", savedCode);
+		logger.info("인증코드2 {} : ", code);
 		if (savedCode != null && savedCode.equals(code)) {
 			// 인증 코드가 일치하면
 			emailVerificationCodes.remove(email); // 사용한 인증 코드 삭제
+			logger.info("하하@@@@ {} : ");
 			return ResponseEntity.ok("이메일이 성공적으로 인증되었습니다.");
 		} else {
 			// 인증 코드가 일치하지 않거나 이메일이 없는 경우

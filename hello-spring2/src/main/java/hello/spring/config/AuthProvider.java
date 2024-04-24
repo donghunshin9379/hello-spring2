@@ -46,11 +46,8 @@ public class AuthProvider implements AuthenticationProvider {
 		        roles.add(new SimpleGrantedAuthority("ROLE_USER"));
 		    }
 
-		    logger.info("roles : {}", roles);
 		    token = new UsernamePasswordAuthenticationToken(memberDTO.getUserId(), null, roles);
 
-		    logger.info("memberDTO 정보 : {} ", memberDTO.toString());
-		    
 		    return token;
 		}
 

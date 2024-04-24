@@ -49,9 +49,13 @@ $(document).ready(function() {
             data: { email: email, code: code },
             success: function(response) {
                 $("#resultMessage").text(response).css("color", "green");
+                $("#emailAuthCode").prop("disabled", true);
+                $("#emailChk").val("true");
+                alert("이메일 인증이 완료되었습니다.");
             },
             error: function(xhr, status, error) {
                 $("#resultMessage").text(xhr.responseText).css("color", "red");
+                $("#emailChk").val("false");
             }
         });
     });
@@ -64,8 +68,12 @@ $(document).ready(function() {
         } else if ($("#emailAuthCode").val() === "") {
             alert("이메일 인증을 먼저 진행해주세요.");
             event.preventDefault(); // 폼 제출을 막습니다.
+        } else if ($("#emailChk").val() === "false") {
+            alert("이메일 인증이 일치하지 않습니다.");
+            event.preventDefault(); // 폼 제출을 막습니다.
         }
     });
+    
 });
 </script>
 </head>
@@ -76,7 +84,7 @@ $(document).ready(function() {
 		<input type="password" id="password" name="password" autocomplete="off"><br><br>
 		<label for="passwordCheck">비밀번호 확인:</label> 
 		<input type="password" id="passwordCheck" name="passwordCheck" placeholder="동일한 비밀번호 입력">
-		<span class="point successPwChk"></span> <input type="hidden" id="pwDoubleChk"><br><br>
+		<span class="point successPwChk"></span> <input type="hidden" id="pwDoubleChk" value=""><br><br>
 		<label for="name">이름:</label>
 		<input type="text" id="name" name="userName"><br><br>
 		<label for="birthdate">생년월일:</label> 
@@ -87,7 +95,8 @@ $(document).ready(function() {
 		<button id="emailAuth">본인인증 요청</button><br><br>
 		<label for="emailAuthCode">인증번호:</label> 
 		<input type="text" id="emailAuthCode" name="emailAuthCode">
-		<button type="button" id="verifyEmail">인증번호 확인</button><br><br>
+		<button type="button" id="verifyEmail">인증번호 확인</button>
+		<input type="hidden" id="emailChk" value=""><br><br>
 		<label for="phone">휴대전화:</label>
 		<input type="text" id="phone" name="phone" pattern="^\d{3}-\d{3,4}-\d{4}$"
 			placeholder="010-1234-5678"><br> <br> 
@@ -102,5 +111,9 @@ $(document).ready(function() {
 
 		<button type="submit">회원가입</button>
 	</form>
+	<!--  메세지 함  -->
+	<div>
+		<p id=resultMessage></p>
+	</div>
 </body>
 </html>
