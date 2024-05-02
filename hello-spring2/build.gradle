@@ -42,6 +42,10 @@ dependencies {
     implementation 'org.webjars:jquery:3.5.1' 
     // mail 의존성
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // jackson 의존성
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    // json 의존성
+    implementation 'org.json:json:20210307'
 }
     
 

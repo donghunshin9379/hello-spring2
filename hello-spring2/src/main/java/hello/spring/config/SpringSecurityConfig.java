@@ -1,14 +1,18 @@
 package hello.spring.config;
 
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +44,16 @@ public class SpringSecurityConfig {
 
 	    return http.build();
 	}
+	
+	//카카오 로그인 더블슬래시 허용
+	public void configure(WebSecurity web) throws Exception {
+		web.httpFirewall(defaultHttpFirewall());
+	}
+	@Bean
+	public HttpFirewall defaultHttpFirewall() {
+		return new DefaultHttpFirewall();
+	}
+	
 }
 //Exception //만들어야댐 (핸들러)
 //.exceptionHandling(

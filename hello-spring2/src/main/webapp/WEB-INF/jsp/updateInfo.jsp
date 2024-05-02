@@ -46,7 +46,7 @@ $(document).ready(function() {
 		<input type="text" id="name" name="userName" value="${member.userName}"><br><br> 
 		<label for="birthdate">생년월일:</label> <input type="date" id="birthday" name="birthday" value="${member.birthday}"><br>
 		<br> 
-		<label for="email">이메일:</label> <input type="email" id="email" name="email" value="${member.email}"> 
+		<label for="email">이메일:</label> <input type="email" id="email" name="email" value="${member.email}"> <br><br> 
 		<label for="phone">휴대전화:</label> <input type="text" id="phone" name="phone" value="${member.phone}" 
 		pattern="^\d{3}-\d{3,4}-\d{4}$"	placeholder="010-1234-5678"><br><br> 
 		<label for="address">주소:</label> <input type="text" id="address" 
