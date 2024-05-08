@@ -4,9 +4,12 @@
 </br>
 
 ## 1. 제작 기간 & 참여 인원 & 나의 역할
-  - 2024년 3월 18일 ~ 4월 12일
+  - 2024년 3월 18일 ~ 5월 8일
   - 개인 프로젝트
   - 회원가입(중복처리), 로그인(비밀번호 암호화) 구현
+  --추가-- (05/08)
+  - 회원가입 이메일 인증
+  - 카카오 로그인 api
 
 </br>
 
@@ -26,10 +29,14 @@
 
 #### '의존성 주입 및 코드 간소화'
 - Project Lombok: 자동 생성자, getter/setter 등을 위한 어노테이션을 사용하여 코드를 간소화
+- Spring Boot Starter Mail : 메일 전송 기능을 제공합니다.
+- Jackson Databind : JSON 데이터를 자바 객체로 매핑하는 데 사용됩니다.
+- JSON : JSON 데이터를 처리하기 위한 라이브러리입니다.
 
 #### '보안 및 인증'
 - Spring Security를 사용한 인증 및 권한 부여
 - AuthenticationProvider를 구현하여 사용자 인증을 커스터마이징
+- Kakao Login: 카카오 로그인을 통한 사용자 인증 기능을 구현
 
 #### '형상관리'
 - Git을 사용하여 소스 코드의 버전 관리 
@@ -59,24 +66,19 @@
   아래 코드는 SignUpController 클래스 내부의 doSignUp 메소드 비즈니스 로직입니다.
   
   ```
-  //회원가입 실행
+
 @PostMapping("/doSignUp")
 public String doSignUp(MemberDTO memberDTO, Model model) {
-// 중복확인을 위해 아이디값 받아옴
 String userId = memberDTO.getUserId();
 
-// 가져온 아이디값 중복 확인
 boolean result = signUpService.isUserIdExists(userId);
   
 if (result == true) {
-// 중복된 아이디가 있을 경우
 model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
-logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
 return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
 	
 } else {
 signUpService.saveMember(memberDTO);
-logger.info("doSignUp@@@@@@@{}", memberDTO.toString()); //@@@@@@@{} 중괄호 안에 뒷값이 표시됨
 model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
 return "home";
 }
@@ -96,11 +98,9 @@ public MemberDTO saveMember(MemberDTO memberDTO) {
 String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
 String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
 
-//memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
 memberDTO.setPassword(encodedPassword);
 memberDTO.setPasswordCheck(encodedPasswordCheck);
 
-// dataHandler값을 받아서 entity에 넣음
 MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
 MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
 memberEntity.getPassword(), memberEntity.getPasswordCheck(),
@@ -154,16 +154,12 @@ SignUpService는 MemberDataHandler를 호출하여 회원가입 프로세스를 
 ```
 @PostMapping("/doSignUp")
 public String doSignUp(MemberDTO memberDTO, Model model) {
-// 중복확인을 위해 아이디값 받아옴
 String userId = memberDTO.getUserId();
 
-// 가져온 아이디값 중복 확인
 boolean result = signUpService.isUserIdExists(userId);
   
 if (result == true) {
-// 중복된 아이디가 있을 경우
 model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
-logger.info("@@@@@@@아이디 중복 {}", memberDTO.toString()); 
 return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
 }
 }
@@ -206,7 +202,6 @@ boolean existsByUserId(String userId);
   (설명을 위해 잘라온 코드입니다)
   ```
 $(document).ready(function() {
-// 비밀번호 확인
 $("#passwordCheck").blur(function(){
 if($("#passwordCheck").val() === $("#password").val()){
     $(".successPwChk").text("비밀번호가 일치합니다.").css("color", "green");
@@ -245,10 +240,10 @@ Spring Security를 이용하여 사용자가 제공한 인증 정보와 데이�
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 http
-.csrf(AbstractHttpConfigurer::disable) //csrf 보안 관련 내용
-.authorizeHttpRequests(authorizeRequest -> authorizeRequest // 권한 부여 
-.requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/home").permitAll()  //전체 권한 가능
-.requestMatchers("/error/**").permitAll()       // 에러 권한
+.csrf(AbstractHttpConfigurer::disable) 
+.authorizeHttpRequests(authorizeRequest -> authorizeRequest 
+.requestMatchers("/css/**","/js/**","/img/**","/fonts/**","/","/login", "/join/**", "/home").permitAll()
+.requestMatchers("/error/**").permitAll()
 .anyRequest().permitAll() 
 )
 .formLogin((formLogin) ->
@@ -271,7 +266,6 @@ return http.build();
 커스터마이징 한 PrincipalDetailsService 입니다.
  
 ```
-//SpringSecurity(/auth)에서 UserDetailsServic참조된 서비스를 자동으로 찾아 진행시킴
 public class PrincipalDetailsService implements UserDetailsService {
 @Autowired
 private MemberRepository memberRepository;
@@ -280,9 +274,6 @@ private PasswordEncoder passwordEncoder;
 @Override
 public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 MemberEntity memberEntity = memberRepository.findByUserId(userId);
-
-// 비밀번호 암호화(passwordEncoder)
-// memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
 
 MemberDTO member = new MemberDTO(memberEntity.getUserId(), passwordEncoder.encode(memberEntity.getPassword()),
 passwordEncoder.encode(memberEntity.getPasswordCheck()), memberEntity.getUserName(), memberEntity.getBirthday(),
@@ -324,8 +315,8 @@ private SignUpService signUpService;
 
 @Override
 public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-String userId = (String) authentication.getPrincipal(); // 로그인 창에 입력한 userId
-String password = (String) authentication.getCredentials(); // 로그인 창에 입력한 password
+String userId = (String) authentication.getPrincipal();
+String password = (String) authentication.getCredentials(); 
 
 PasswordEncoder passwordEncoder = signUpService.passwordEncoder();
 UsernamePasswordAuthenticationToken token;
@@ -334,19 +325,16 @@ MemberDTO memberDTO = signUpService.getMemberByUserId(userId);
 
 if (memberDTO != null && passwordEncoder.matches(password, memberDTO.getPassword())) { 
 List<GrantedAuthority> roles = new ArrayList<>();
-roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 권한 부여
+roles.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-logger.info("roles : {}", roles);
 token = new UsernamePasswordAuthenticationToken(memberDTO.getUserId(), null, roles);
-// 인증된 user 정보를 담아 SecurityContextHolder에 저장되는 token
 
-logger.info("memberDTO 정보 : {} ", memberDTO.toString());
 if (memberDTO.getUserId().equals("admin")) {
-	roles.add(new SimpleGrantedAuthority("ROLE_ADMIN")); // 권한 부여
+	roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 }
 return token;
 }
-// if 반대 방향 던짐
+
 throw new BadCredentialsException("No such user or wrong password.");
 }
 
@@ -384,14 +372,11 @@ Spring Security의 PasswordEncoder 인터페이스를 구현한 BCryptPasswordEn
   ```
 @Override
 public MemberDTO saveMember(MemberDTO memberDTO) {
-//비밀번호 암호화(passwordEncoder)
 String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
 String encodedPasswordCheck = passwordEncoder.encode(memberDTO.getPasswordCheck());
-//memberDTO에서 가져온 비밀번호를 암호화된 비밀번호로 다시 설정
 memberDTO.setPassword(encodedPassword);
 memberDTO.setPasswordCheck(encodedPasswordCheck);
 
-// dataHandler값을 받아서 entity에 넣음
 MemberEntity memberEntity = memberDataHandler.saveMemberEntity(memberDTO);
 MemberDTO memberDTO2 = new MemberDTO(memberEntity.getUserId(),
 memberEntity.getPassword(), memberEntity.getPasswordCheck(),
@@ -408,7 +393,36 @@ return memberDTO2;
 ### 4. 추가적인 방향, 계획
 - 앞으로 프로젝트를 진행하면서 기본적으로 알아야 할 개념, 지식을 꾸준히 공부하고 짜임새 있게 프로젝트를 만들고 테스트해보며 실습 경험을 쌓아야겠습니다.
 
--------계획된 기능--------
-- 회원가입 이메일 인증
+-------추가된 기능--------
 - 카카오톡 API를 이용한 로그인
+- 회원가입 이메일 인증
 - 회원정보 수정
+
+### 5. 추가된 기능
+### 5.1. 카카오 로그인 
+
+
+<details>
+  <summary>상세설명 펼치기</summary>
+  
+  
+  
+  ```
+
+@PostMapping("/doSignUp")
+public String doSignUp(MemberDTO memberDTO, Model model) {
+String userId = memberDTO.getUserId();
+
+boolean result = signUpService.isUserIdExists(userId);
+  
+if (result == true) {
+model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
+return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
+	
+} else {
+signUpService.saveMember(memberDTO);
+model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
+return "home";
+}
+}
+```
