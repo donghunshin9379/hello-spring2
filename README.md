@@ -399,30 +399,140 @@ return memberDTO2;
 - 회원정보 수정
 
 ### 5. 추가된 기능
-### 5.1. 카카오 로그인 
-
+### 5.1. 카카오 로그인 api 
+카카오 로그인 사용자 뷰
+![kakaologin](https://github.com/donghunshin9379/hello-spring2/assets/139945914/37409392-4288-4c2c-aa33-34948631ff3c)
+카카오 로그인 URL을 클릭하면 카카오 OAuth 2.0 인증 서버에 발급받았던 클라이언트 ID와 함께 리디렉션할 URL이 서비스 됩니다.
 
 <details>
   <summary>상세설명 펼치기</summary>
-  
-  
-  
-  ```
-
-@PostMapping("/doSignUp")
-public String doSignUp(MemberDTO memberDTO, Model model) {
-String userId = memberDTO.getUserId();
-
-boolean result = signUpService.isUserIdExists(userId);
-  
-if (result == true) {
-model.addAttribute("errorMessage", "이미 사용 중인 아이디입니다. 다른 아이디를 선택해주세요.");
-return "signUp"; // 다시 회원가입 페이지로 이동 (redirect:signUp)
 	
-} else {
-signUpService.saveMember(memberDTO);
-model.addAttribute("signUpSuccess", "회원가입이 완료 되었습니다.");
-return "home";
-}
+  ```
+  <div>
+  <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=0c0bf7f540364c14e4b82afa45e09fe2&redirect_uri=http://localhost:8060/callback">카카오 로그인</a>
+  </div>
+  ```
+</details>
+
+리디렉션 이후 KakaoLoginController의 callback 이 호출됩니다. callback은 다음과 같이 동작됩니다
+
+String clientId = "0c0bf7f540364c14e4b82afa45e09fe2";
+
+클라이언트 아이디를 설정합니다. 이 값은 카카오 개발자 애플리케이션을 등록할 때 발급받은 것입니다.
+String accessToken = kakaoService.getAccessTokenFromKakao(clientId, code);
+
+kakaoService를 사용하여 인증 코드와 클라이언트 아이디를 통해 액세스 토큰을 받아옵니다. getAccessTokenFromKakao 메서드는 카카오 서버에 요청을 보내서
+인증 코드를 액세스 토큰으로 교환합니다.
+
+return "redirect:/userinfo?accessToken=" + accessToken;
+
+액세스 토큰을 URL 매개변수로 포함하여 "/userinfo" 엔드포인트로 리디렉션합니다. 이 엔드포인트에서 사용자 정보를 처리할 수 있습니다.
+
+<details>
+  <summary>상세설명 펼치기</summary>
+	
+```
+@GetMapping("/callback")
+public String callback(@RequestParam("code") String code) throws IOException {
+String clientId = "0c0bf7f540364c14e4b82afa45e09fe2";
+String accessToken = kakaoService.getAccessTokenFromKakao(clientId, code);
+return "redirect:/userinfo?accessToken=" + accessToken;
 }
 ```
+</details>
+
+인증 코드 > 액세스 토큰 교환 과정 (KakaoService 클래스) 
+
+getAccessTokenFromKakao 메소드는 매개변수로 clientId, code (인증코드)를 받습니다.
+액세스 토큰을 요청할 URL을 만들고 생성한 URL로 POST 요청 > 카카오서버 응답 읽기 > 응답 데이터 JSON 파싱 (추출) > 추출한 액세스 토큰 반환
+
+<details>
+  <summary>상세설명 펼치기</summary>
+	
+```
+@Service
+public class KakaoService {
+private static final Logger logger = LoggerFactory.getLogger(KakaoService.class);
+
+public String getAccessTokenFromKakao(String clientId, String code) throws IOException {
+//------카카오 POST 요청------
+String reqURL = "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="+clientId+"&code=" + code;
+URL url = new URL(reqURL);
+HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+conn.setRequestMethod("POST");
+
+
+BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+String line = "";
+String result = "";
+
+while ((line = br.readLine()) != null) {
+    result += line;
+}
+
+ObjectMapper objectMapper = new ObjectMapper();
+Map<String, Object> jsonMap = objectMapper.readValue(result, new TypeReference<Map<String, Object>>() {
+});
+
+logger.info("Response Body : " + result);
+
+String accessToken = (String) jsonMap.get("access_token");
+String refreshToken = (String) jsonMap.get("refresh_token");
+String scope = (String) jsonMap.get("scope");
+return accessToken;
+}
+
+}
+
+```
+</details>
+
+위의 과정으로 반환된 토큰이 userinfo로 함께 리다이렉트 요청 됩니다. 토큰을 기반으로 카카오 api를 이용하여 유저 정보를 불러올 수 있습니다.
+
+![kakaoUserinfo](https://github.com/donghunshin9379/hello-spring2/assets/139945914/b11daea6-fe7e-4f01-b8da-b2d74fdb411a)
+
+accessToken 파라미터를 받고 카카오api 요청 > 응답 후 JSON 형식의 사용자 정보 반환 > 반환된 정보를 Model 객체에 추가 후 userinfo.jsp로 전달됩니다.
+<details>
+  <summary>상세설명 펼치기</summary>
+	
+  ```
+@GetMapping("/userinfo")
+public String getUserInfo(@RequestParam("accessToken") String accessToken, Model model) {
+
+String apiUrl = "https://kapi.kakao.com/v2/user/me";
+
+RestTemplate restTemplate = new RestTemplate();
+
+HttpHeaders headers = new HttpHeaders();
+headers.set("Authorization", "Bearer " + accessToken);
+
+ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+
+if (responseEntity.getStatusCode() == HttpStatus.OK) {
+String userInfoJson = responseEntity.getBody();
+JSONObject jsonObject = new JSONObject(userInfoJson);
+
+String userName = jsonObject.getJSONObject("properties").getString("nickname");
+model.addAttribute("userName", userName);
+
+if (jsonObject.getJSONObject("kakao_account").has("email")) {
+    String email = jsonObject.getJSONObject("kakao_account").getString("email");
+    model.addAttribute("email", email);
+} else {
+    model.addAttribute("email", "Email not provided");
+}
+
+String profileImageUrl = jsonObject.getJSONObject("properties").getString("profile_image");
+model.addAttribute("profileImageUrl", profileImageUrl);
+
+return "kakaouserInfo";
+} else {
+return "Failed to retrieve user information.";
+}
+}
+
+  ```
+</details>
+
+
